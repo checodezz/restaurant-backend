@@ -1,8 +1,14 @@
 import express from "express"
+import cors from "cors"
 const app = express();
 app.use(express.json())
 
+const corsOption = {
+    origin: "*",
+    credentials: true
+}
 
+app.use(cors(corsOption))
 import initializeDatabase from "./db/db.connect.js";
 import Recipe from "./model/restaurant.model.js"
 initializeDatabase();
@@ -79,6 +85,30 @@ app.delete("/recipe/:id", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Failed to delete recipe." })
+    }
+})
+
+const getRecipeByid = async (recipeId) => {
+    try {
+        const recipe = await Recipe.findById(recipeId)
+        return recipe
+    } catch (error) {
+        throw error
+    }
+}
+
+app.get("/recipe/:id", async (req, res) => {
+    try {
+        const recipeByid = req.params.id;
+        const recipe = await getRecipeByid(recipeByid);
+        if (recipe) {
+            res.status(200).json({ message: "Recipe found:", recipe: recipe })
+        } else {
+            res.status(404).json({ error: "Recipe not found" })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Failed to fetch recipe." })
     }
 })
 
