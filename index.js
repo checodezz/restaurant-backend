@@ -10,7 +10,7 @@ const corsOption = {
 
 app.use(cors(corsOption))
 import initializeDatabase from "./db/db.connect.js";
-import Recipe from "./model/restaurant.model.js"
+import Recipe from "./model/recipes.model.js"
 initializeDatabase();
 
 app.get("/", (req, res) => {
